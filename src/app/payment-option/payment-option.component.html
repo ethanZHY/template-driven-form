@@ -1,0 +1,60 @@
+<div class="container" style="width: 28%">
+    <!-- #template reference variable -->
+    <div [hidden]="submitted">
+      <h1>Payment Option</h1>
+      <form (ngSubmit)="onSubmit()" #paymentForm="ngForm">
+        <div class="form-group" id="credit_cards">
+            <h5>Credit Card</h5>
+            <img src="assets/visa.jpg" id="visa" style="width:45px;">
+            <img src="assets/mastercard.jpg" id="mastercard" style="width:45px;">
+            <img src="assets/amex.jpg" id="amex" style="width:45px;">
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" [(ngModel)] = "user.name" name = "name" required #spyName #username="ngModel">
+            <div [hidden]="username.valid || username.pristine" class="alert alert-danger">Name Required</div>
+        </div>
+        <div class="form-group">
+            <label for="card-number">Card Number</label>
+            <input type="string" maxlength="16" minlength="16" class="form-control" id="card-number" [(ngModel)]="user.cardNumber" name="cardNumber" #spyCardNumber #card="ngModel"required >
+            <div [hidden]="card.valid || card.pristine" class="alert alert-danger">Card Number must be at least 16 digits long</div>
+        </div>
+        <div class="form-group">
+          <label>Expiration Date</label>
+            <select class="form-control" id="expireMonth" [(ngModel)] = "user.expireMonth" name = "expireMonth" required #spyMonth #month="ngModel">
+              <option disabled selected>select month</option>
+              <option *ngFor="let mm of months" [value]="mm">{{mm}}</option>
+            </select>
+            <select class="form-control" id="expireYear" [(ngModel)] = "user.expireYear" name = "expireYear" required #spyYear #year="ngModel">
+              <option disabled selected>select year</option>
+              <option *ngFor="let yy of years" [value]="yy">{{yy}}</option>
+            </select>
+            <div class="pull-right">
+              <label for="securityCode">SCV</label>
+              <input type="string" id="securityCode" maxlength="3" minlength="3" class="form-control" [(ngModel)]="user.securityCode" name="security" required #scv="ngModel" #spySCV>
+            </div>
+            <div [hidden]="scv.valid || scv.pristine" class="alert alert-danger">Please input the 3 digits number at the back of your card</div>
+            <div [hidden]="month.valid || month.pristine" class="alert alert-danger">Please select expire month</div>
+            <div [hidden]="year.valid || year.pristine" class="alert alert-danger">Please select expire year</div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-success" [disabled]="!paymentForm.form.valid">Submit</button>
+        <button type="reset" class="btn btn-default">Reset</button>
+        <div>{{user | json}}</div>
+        <div>[name.class = {{spyName.className}}]</div>
+        <div>[card-number.class = {{spyCardNumber.className}}]</div>
+        <div>[expireMonth.class = {{spyMonth.className}}]</div>
+        <div>[expireYear.class = {{spyYear.className}}]</div>
+        <div>[securityCode.class = {{spySCV.className}}]</div>
+      </form>
+    </div>
+    <div [hidden]="!submitted">
+      <h1>Review Payment</h1>
+        <div>Name: {{ user.name }}</div>
+        <div>Card Number: {{ user.cardNumber }}</div>
+        <div>Expiration Date: {{ user.expireMonth }}-{{user.expireYear}}</div>
+        <div>SCV: {{ user.securityCode }}</div>
+        <br>
+      <button class="btn btn-primary" (click)="submitted=false">Back</button>
+    </div>
+  </div>
