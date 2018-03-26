@@ -1,6 +1,6 @@
 <div class="container" style="width: 28%">
     <!-- #template reference variable -->
-    <div [hidden]="submitted">
+    <div *ngIf="!submitted">
       <h1>Payment Option</h1>
       <form (ngSubmit)="onSubmit()" #paymentForm="ngForm">
         <div class="form-group" id="credit_cards">
@@ -12,12 +12,19 @@
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" [(ngModel)] = "user.name" name = "name" required #spyName #username="ngModel">
-            <div [hidden]="username.valid || username.pristine" class="alert alert-danger">Name Required</div>
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="alert alert-danger">Name Required</div>
         </div>
         <div class="form-group">
             <label for="card-number">Card Number</label>
-            <input type="string" maxlength="16" minlength="16" class="form-control" id="card-number" [(ngModel)]="user.cardNumber" name="cardNumber" #spyCardNumber #card="ngModel"required >
-            <div [hidden]="card.valid || card.pristine" class="alert alert-danger">Card Number must be at least 16 digits long</div>
+            <input type="string" maxlength="16" minlength="16" class="form-control" id="card-number" [(ngModel)]="user.cardNumber" name="cardNumber" #spyCardNumber #card="ngModel" required >
+            <div *ngIf="card.invalid && (card.dirty || card.touched)" class="alert alert-danger">
+                <div *ngIf="card.errors.required">
+                    CN is required.
+                </div>
+                <div *ngIf="card.errors.minlength">
+                  CN must be at least 16 characters long.
+                </div>
+            </div>
         </div>
         <div class="form-group">
           <label>Expiration Date</label>
@@ -33,9 +40,9 @@
               <label for="securityCode">SCV</label>
               <input type="string" id="securityCode" maxlength="3" minlength="3" class="form-control" [(ngModel)]="user.securityCode" name="security" required #scv="ngModel" #spySCV>
             </div>
-            <div [hidden]="scv.valid || scv.pristine" class="alert alert-danger">Please input the 3 digits number at the back of your card</div>
-            <div [hidden]="month.valid || month.pristine" class="alert alert-danger">Please select expire month</div>
-            <div [hidden]="year.valid || year.pristine" class="alert alert-danger">Please select expire year</div>
+            <div *ngIf="scv.invalid && (scv.dirty || scv.touched)" class="alert alert-danger">Please input the 3 digits number at the back of your card</div>
+            <div *ngIf="month.invalid && (month.dirty || month.touched)" class="alert alert-danger">Please select expire month</div>
+            <div *ngIf="year.invalid && (year.dirty || month.touched)" class="alert alert-danger">Please select expire year</div>
         </div>
         <br>
         <button type="submit" class="btn btn-success" [disabled]="!paymentForm.form.valid">Submit</button>
@@ -48,7 +55,7 @@
         <div>[securityCode.class = {{spySCV.className}}]</div>
       </form>
     </div>
-    <div [hidden]="!submitted">
+    <div  *ngIf="submitted">
       <h1>Review Payment</h1>
         <div>Name: {{ user.name }}</div>
         <div>Card Number: {{ user.cardNumber }}</div>
